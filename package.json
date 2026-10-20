@@ -1,0 +1,14 @@
+{
+  "name": "kotoba-monster",
+  "version": "1.1.0",
+  "private": true,
+  "description": "フランス語学習育成ゲーム「ことばモンスター」(依存ライブラリなし。Node 18+ で検証・テストを実行できます)",
+  "scripts": {
+    "validate": "node scripts/validate_words.js && node scripts/validate_phrases.js && node scripts/validate_policy.js",
+    "check": "node scripts/check_syntax.js",
+    "content:status": "node scripts/content_status.js",
+    "test": "npm run check && npm run validate && node --test tests/*.test.js",
+    "format": "npx --yes prettier@3 --write \"src/**/*.js\" \"scripts/*.js\" \"tests/*.js\" \"css/*.css\"",
+    "format:check": "npx --yes prettier@3 --check \"src/**/*.js\" \"scripts/*.js\" \"tests/*.js\" \"css/*.css\""
+  }
+}

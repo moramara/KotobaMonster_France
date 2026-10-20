@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" id="tc" content="#e8f0ff">
+<title>ことばモンスター</title>
+<script>
+/* テーマの先読み(ちらつき防止)。CSSの読み込み・最初の描画より前に、保存されたテーマ('light' か 'dark')を html の data-theme に付ける。
+   未保存・不正な値のときは何も付けず、CSS の prefers-color-scheme(OSの設定)に任せる。ブラウザのアドレスバーの色(theme-color)も合わせる。
+   規則は app.js の applyTheme と同じ。保存キーは記録(kotoba-monster-v1)とは別。 */
+(function () {
+  var t = null, d = document.documentElement;
+  try { t = localStorage.getItem('kotoba-monster-theme'); } catch (e) { t = null; }
+  if (t !== 'light' && t !== 'dark') t = null;
+  if (t) d.setAttribute('data-theme', t);
+  var dark = t ? t === 'dark' : !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches), m = document.getElementById('tc');
+  if (m) m.setAttribute('content', dark ? '#0f1426' : '#e8f0ff');
+})();
+</script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="top"><h1>ことばモンスター</h1><span class="sub">フランス語をおぼえて育てよう</span></header>
+<main id="app"></main>
+<p id="kbhint" class="kbhint small" hidden></p>
+<div id="toast" role="status" aria-live="polite"></div>
+<noscript><p style="padding:16px">このゲームにはJavaScriptが必要です。</p></noscript>
+<script src="data/words.js"></script>
+<script src="src/lib/wordlib.js"></script>
+<script src="src/lib/keymap.js"></script>
+<script src="src/lib/growth.js"></script>
+<script src="src/lib/speech.js"></script>
+<script src="data/phrases.js"></script>
+<script src="src/lib/phraselib.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>

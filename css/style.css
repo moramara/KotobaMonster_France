@@ -1,0 +1,872 @@
+/* ==========================================================================
+   ことばモンスター ― スタイルシート
+
+   目次
+    1. テーマ(配色)  ← 色はここだけで定義する
+    2. 基本(ページ全体の土台)
+    3. 部品(カード・ボタン・リンク)
+    4. ホーム・育成(モンスター・ステータス)
+    5. 問題画面(出題文・選択肢・解説)
+    6. 演出(アニメーション)
+    7. 単語図鑑・バッジ
+    8. 図鑑の検索・絞り込み
+    9. 構文トレーニング
+   10. BOTおまかせ復習
+   11. 表示テーマの切り替え
+   12. キーボードショートカット
+
+   書式: 1行に1宣言。字下げは半角スペース2つ。Prettier(printWidth 100)で整形している。
+   ========================================================================== */
+
+/* ==========================================================================
+   1. テーマ(配色)
+   色はすべてCSS変数で一元管理する。色は、下の3つのブロック以外に直接書かない(tests/theme.test.js が確認する)。
+   ライト = 既定。ダーク = ユーザーが選んだ(html[data-theme=dark])か、未選択でOSがダークのとき。
+   ユーザーの選択(data-theme)がOSの設定より優先される。
+   ダークの値は、下の2つのブロックで同じにする(テストで一致を確認)。
+   ========================================================================== */
+:root {
+  /* 画面全体の背景 */
+  --bg: #e8f0ff;
+  /* 本文の文字色 */
+  --ink: #1f2a4d;
+  /* 補助の文字色(説明文・小さな文字)。背景に対して 4.5:1 以上 */
+  --mute: #4f5a7e;
+  /* カードの背景 */
+  --card: #fff;
+  /* ボタン・入力欄・選択肢の背景 */
+  --surface: #fff;
+  /* 枠線 */
+  --line: #cfd9f5;
+  /* 進捗バー・HPバーの下地 */
+  --track: #cfd9f5;
+  /* バッジの既定の背景 */
+  --badge: #cfd9f5;
+  /* 主色(標準のボタン) */
+  --pri: #4c5bd4;
+  /* 主色の上の文字 */
+  --pri-ink: #fff;
+  /* 正解の色 */
+  --ok: #0f7a52;
+  /* 正解の上の文字 */
+  --ok-ink: #fff;
+  /* 不正解の色 */
+  --ng: #c93049;
+  /* 不正解の上の文字 */
+  --ng-ink: #fff;
+  /* 強調(黄色)のボタン */
+  --sun: #ffc94a;
+  /* 強調ボタンの上の文字 */
+  --sun-ink: #1f2a4d;
+  /* キーボードのフォーカス枠 */
+  --focus: #ffc94a;
+  /* 「学習中」バッジの背景 */
+  --badge-learning: #d9e4ff;
+  --badge-review: #ffd9de;
+  --badge-mastered: #c9f2e0;
+  /* お知らせ(トースト)の背景 */
+  --toast-bg: #1f2a4d;
+  --toast-ink: #fff;
+  /* ボタンの影(濃) */
+  --shadow: rgba(0, 0, 0, 0.18);
+  --shadow-soft: rgba(0, 0, 0, 0.12);
+  /* 押せないボタンの背景 */
+  --dis-bg: #d5ddf2;
+  --dis-ink: #4a5578;
+  /* ブラウザ標準部品(スクロールバー等)の配色 */
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --bg: #0f1426;
+  --ink: #e8ecff;
+  --mute: #a9b3da;
+  --card: #1a2140;
+  --surface: #222b55;
+  --line: #5b68ae;
+  --track: #313c72;
+  --badge: #323d75;
+  --pri: #8b97ff;
+  --pri-ink: #0f1426;
+  --ok: #34d399;
+  --ok-ink: #06281d;
+  --ng: #ff8a9c;
+  --ng-ink: #2b0a12;
+  --sun: #ffc94a;
+  --sun-ink: #1f2a4d;
+  --focus: #ffc94a;
+  --badge-learning: #2f4090;
+  --badge-review: #7a2f45;
+  --badge-mastered: #1f5f49;
+  --toast-bg: #e8ecff;
+  --toast-ink: #0f1426;
+  --shadow: rgba(0, 0, 0, 0.5);
+  --shadow-soft: rgba(0, 0, 0, 0.4);
+  --dis-bg: #303a70;
+  --dis-ink: #b4bde0;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1426;
+    --ink: #e8ecff;
+    --mute: #a9b3da;
+    --card: #1a2140;
+    --surface: #222b55;
+    --line: #5b68ae;
+    --track: #313c72;
+    --badge: #323d75;
+    --pri: #8b97ff;
+    --pri-ink: #0f1426;
+    --ok: #34d399;
+    --ok-ink: #06281d;
+    --ng: #ff8a9c;
+    --ng-ink: #2b0a12;
+    --sun: #ffc94a;
+    --sun-ink: #1f2a4d;
+    --focus: #ffc94a;
+    --badge-learning: #2f4090;
+    --badge-review: #7a2f45;
+    --badge-mastered: #1f5f49;
+    --toast-bg: #e8ecff;
+    --toast-ink: #0f1426;
+    --shadow: rgba(0, 0, 0, 0.5);
+    --shadow-soft: rgba(0, 0, 0, 0.4);
+    --dis-bg: #303a70;
+    --dis-ink: #b4bde0;
+    color-scheme: dark;
+  }
+}
+/* ==========================================================================
+   2. 基本 ― ページ全体の土台
+   画面幅は最大 560px。スマートフォンを主に想定し、ノッチ等の安全領域(safe-area)を避ける。
+   ========================================================================== */
+* {
+  box-sizing: border-box;
+}
+html,
+/* 文字は丸ゴシック系。安全領域の余白を取り、ノッチやホームバーに文字が重ならないようにする */
+body {
+  margin: 0;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Hiragino Maru Gothic ProN", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+  line-height: 1.5;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+}
+.top {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 14px 16px 0;
+}
+.top h1 {
+  font-size: 1.3rem;
+  margin: 0;
+}
+.sub {
+  font-size: 0.8rem;
+  color: var(--mute);
+}
+#app {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 12px 16px 40px;
+}
+/* ==========================================================================
+   3. 部品 ― カード・ボタン・リンク
+   画面のほとんどの要素はこの3種類の部品で作る。
+   ========================================================================== */
+/* 白い(ダークでは濃い)角丸の箱。問題・結果・説明などをまとめる */
+.card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 14px;
+  border: 2px solid var(--line);
+}
+/* 基本のボタン。指で押しやすいよう高さ 58px 以上(tests/phrase_app.test.js が確認)。下の影で「押せる」感じを出す */
+.btn {
+  display: block;
+  width: 100%;
+  min-height: 58px;
+  padding: 12px 16px;
+  margin: 10px 0;
+  border: 0;
+  border-radius: 16px;
+  background: var(--pri);
+  color: var(--pri-ink);
+  font: inherit;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--shadow);
+}
+.btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--shadow);
+}
+/* 色違い: .sun = 目立たせたい主操作(黄色)、.ghost = 控えめな操作(枠だけ) */
+.btn.sun {
+  background: var(--sun);
+  color: var(--sun-ink);
+}
+.btn.ghost {
+  background: var(--surface);
+  color: var(--ink);
+  border: 2px solid var(--line);
+  box-shadow: none;
+}
+/* 押せないボタン。opacity で薄くせず、専用の色(--dis-bg / --dis-ink)で示す(文字のコントラストを保つため) */
+.btn:disabled {
+  background: var(--dis-bg);
+  color: var(--dis-ink);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+/* キーボード操作のフォーカス枠。太い黄色の枠で、どのボタンにいるか分かるようにする */
+.btn:focus-visible,
+.spk:focus-visible {
+  outline: 4px solid var(--focus);
+  outline-offset: 2px;
+}
+.link {
+  background: none;
+  border: 0;
+  color: var(--mute);
+  font: inherit;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  padding: 12px;
+  cursor: pointer;
+}
+/* ==========================================================================
+   4. ホーム・育成 ― モンスター・ステータス・バトルの舞台
+   ========================================================================== */
+.center {
+  text-align: center;
+}
+.mon {
+  font-size: 5.5rem;
+  line-height: 1.1;
+  display: inline-block;
+}
+.enemy {
+  font-size: 4rem;
+  display: inline-block;
+}
+.name {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.bar {
+  height: 16px;
+  border-radius: 9px;
+  background: var(--track);
+  overflow: hidden;
+  margin: 8px 0;
+}
+.bar > i {
+  display: block;
+  height: 100%;
+  background: var(--ok);
+  transition: width 0.4s;
+}
+.bar.hp > i {
+  background: var(--ng);
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  text-align: center;
+}
+.stats b {
+  display: block;
+  font-size: 1.3rem;
+}
+.stats span {
+  font-size: 0.7rem;
+  color: var(--mute);
+}
+.small {
+  font-size: 0.85rem;
+  color: var(--mute);
+}
+.arena {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+}
+.arena .mon {
+  font-size: 4rem;
+}
+/* ==========================================================================
+   5. 問題画面 ― 出題文・選択肢・正解/不正解の表示
+   ========================================================================== */
+.ask {
+  margin: 0 0 6px;
+  color: var(--mute);
+  font-weight: 700;
+}
+.big {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 6px 0;
+  word-break: break-word;
+}
+.big.fr {
+  font-family: Georgia, "Times New Roman", serif;
+}
+.pic {
+  font-size: 5rem;
+  line-height: 1.2;
+}
+.spk {
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 14px;
+  min-height: 48px;
+  padding: 6px 16px;
+  font: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin: 6px 0;
+}
+/* 選択肢のボタン。回答後は disabled になるが、薄くはしない(読めるままにする) */
+.choices .btn {
+  background: var(--surface);
+  color: var(--ink);
+  border: 2px solid var(--line);
+  box-shadow: none;
+  text-align: left;
+}
+.choices .btn:disabled {
+  color: var(--mute);
+  cursor: default;
+}
+.choices .btn.ok {
+  background: var(--ok);
+  color: var(--ok-ink);
+  border-color: var(--ok);
+}
+.choices .btn.ng {
+  background: var(--ng);
+  color: var(--ng-ink);
+  border-color: var(--ng);
+}
+/* 回答後の正解・不正解は、色だけでなく記号(✓ / ✗)でも示す。文字は薄くせず、色の組み合わせでコントラストを保証する */
+.choices .btn.ok::before {
+  content: "✓ ";
+}
+.choices .btn.ng::before {
+  content: "✗ ";
+}
+/* 回答後の解説カード(.good = 正解、.bad = 不正解)。見出しにも ✅ / ❌ の記号と文言がある */
+.fb.good {
+  border-color: var(--ok);
+}
+.fb.bad {
+  border-color: var(--ng);
+}
+.fb h2 {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+}
+.ex {
+  margin: 8px 0 0;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+}
+/* ==========================================================================
+   6. 演出 ― アニメーション
+   動きを減らす設定(prefers-reduced-motion)のときは、末尾で無効にする。
+   ========================================================================== */
+.atk {
+  animation: atk 0.45s;
+}
+.hurt {
+  animation: hurt 0.45s;
+}
+@keyframes atk {
+  40% {
+    transform: translateX(28px) scale(1.15);
+  }
+}
+@keyframes hurt {
+  20%,
+  60% {
+    transform: translateX(8px);
+    filter: brightness(2);
+  }
+  40%,
+  80% {
+    transform: translateX(-8px);
+  }
+}
+.evo {
+  animation: pop 0.8s;
+}
+@keyframes pop {
+  50% {
+    transform: scale(1.35) rotate(8deg);
+  }
+}
+/* 画面下に一時表示するお知らせ(app.js の toast())。role=status なので、スクリーンリーダーにも読み上げられる */
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: var(--toast-bg);
+  color: var(--toast-ink);
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+  max-width: 90%;
+}
+#toast.on {
+  opacity: 1;
+}
+/* 結果画面の「まちがえた単語」などの一覧 */
+ul.rv {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+}
+ul.rv li {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+/* 「視覚効果を減らす」設定の利用者には、アニメーションを出さない */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+/* ==========================================================================
+   7. 単語図鑑・バッジ・絞り込みチップ
+   ========================================================================== */
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  -webkit-overflow-scrolling: touch;
+}
+.chip {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 6px 16px;
+  border-radius: 22px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.chip.on {
+  background: var(--pri);
+  border-color: var(--pri);
+  color: var(--pri-ink);
+  font-weight: 700;
+}
+.zgrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.zc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-height: 130px;
+  padding: 10px 6px;
+  border-radius: 16px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.zc:focus-visible {
+  outline: 4px solid var(--focus);
+  outline-offset: 2px;
+}
+.ze {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+/* 習得状況のバッジ(未学習・学習中・復習待ち・習得済み)。色だけでなく文字でも区別する */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--badge);
+  color: var(--ink);
+}
+.badge.learning {
+  background: var(--badge-learning);
+}
+.badge.review {
+  background: var(--badge-review);
+}
+.badge.mastered {
+  background: var(--badge-mastered);
+}
+.defs {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 2px solid var(--line);
+}
+.defs summary {
+  cursor: pointer;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.defs ul {
+  margin: 4px 0 6px;
+  padding-left: 18px;
+}
+/* ==========================================================================
+   8. 図鑑 ― 検索・絞り込み・ページ送り・敵HP
+   ========================================================================== */
+.search {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin: 0 0 8px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+}
+/* 案内文字。Firefox は既定で薄く(opacity .54)するため、1 を明示して読めるコントラストを保つ */
+.search::placeholder {
+  color: var(--mute);
+  opacity: 1;
+}
+.search:focus-visible,
+.sel select:focus-visible {
+  outline: 4px solid var(--focus);
+  outline-offset: 2px;
+}
+.fsel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.sel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.sel span {
+  font-size: 0.72rem;
+  color: var(--mute);
+  font-weight: 700;
+}
+.sel select {
+  width: 100%;
+  min-height: 44px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+}
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+.pager .btn {
+  margin: 0;
+  min-height: 48px;
+  flex: 1;
+  font-size: 1rem;
+}
+.hpn {
+  margin: 0;
+}
+/* ==========================================================================
+   9. 構文トレーニング ― 完成文の選択・語順カード・構文図鑑
+   語順整序は「答えの欄(.tray)」と「語句カードの置き場(.tray.pool)」の2つの欄で作る。
+   ========================================================================== */
+.choices.fr .btn {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.02rem;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.tray {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 64px;
+  padding: 10px;
+  margin-top: 6px;
+  border: 2px dashed var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  align-items: center;
+}
+.tray.ok {
+  border-style: solid;
+  border-color: var(--ok);
+}
+.tray.ng {
+  border-style: solid;
+  border-color: var(--ng);
+}
+.tray.pool {
+  border-style: solid;
+  background: var(--bg);
+}
+/* 語句カード(ボタン)。高さ 48px 以上で、長い語句は折り返す(tests/phrase_app.test.js が確認) */
+.pcard {
+  min-height: 48px;
+  max-width: 100%;
+  padding: 8px 14px;
+  border-radius: 14px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  cursor: pointer;
+  text-align: left;
+  overflow-wrap: anywhere;
+  box-shadow: 0 2px 0 var(--shadow-soft);
+}
+.pcard:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+.pcard:focus-visible {
+  outline: 4px solid var(--focus);
+  outline-offset: 2px;
+}
+.pcard.in {
+  background: var(--pri);
+  border-color: var(--pri);
+  color: var(--pri-ink);
+}
+/* 答えの欄へ移した語句(プール側)。薄くせず、専用色+取り消し線で「使用済み」と示す */
+.pcard.used {
+  background: var(--dis-bg);
+  border-color: var(--dis-bg);
+  color: var(--dis-ink);
+  cursor: default;
+  box-shadow: none;
+  text-decoration: line-through;
+}
+.pcard:disabled:not(.used) {
+  cursor: default;
+}
+/* 構文図鑑の一覧 */
+.plist {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.pc {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-height: 76px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.pc b {
+  font-size: 1.05rem;
+}
+.pc:focus-visible {
+  outline: 4px solid var(--focus);
+  outline-offset: 2px;
+}
+.fr {
+  font-family: Georgia, "Times New Roman", serif;
+  overflow-wrap: anywhere;
+}
+ul.rv details {
+  margin-top: 2px;
+}
+ul.rv summary {
+  cursor: pointer;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+/* ==========================================================================
+   10. BOTおまかせ復習
+   操作バーは画面下に固定し、スマートフォンでも押しやすい大きさ(高さ60px以上)にする。
+   ========================================================================== */
+.botbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 0.8fr;
+  gap: 8px;
+  padding: 8px 0 4px;
+  background: var(--bg);
+}
+.botbar .btn {
+  margin: 0;
+  min-height: 60px;
+  padding: 8px 6px;
+  font-size: 1rem;
+}
+/* BOTの選択肢は表示専用(すべて disabled)。それでも読みやすい文字色にする */
+.botq .choices .btn:disabled {
+  color: var(--ink);
+  cursor: default;
+}
+.botq .choices .btn.ok:disabled {
+  color: var(--ok-ink);
+}
+.botq .pcard:disabled {
+  cursor: default;
+}
+.botq .choices .btn {
+  margin: 6px 0;
+}
+/* ==========================================================================
+   11. 表示テーマの切り替え(ホーム)
+   選択中のボタンは色だけでなく「✓」でも示す。
+   ========================================================================== */
+.theme {
+  margin: 6px 0 10px;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.theme legend {
+  padding: 0;
+  margin: 0 0 2px;
+}
+.theme .chips {
+  flex-wrap: wrap;
+  overflow: visible;
+  padding-bottom: 2px;
+}
+.theme .chip {
+  padding: 6px 12px;
+}
+
+/* ==========================================================================
+   12. キーボードショートカット
+   画面下の案内文・ボタンのキー表示バッジ・キー設定画面。
+   ========================================================================== */
+.kbhint {
+  max-width: 640px;
+  margin: 8px auto 0;
+  padding: 0 16px;
+  text-align: center;
+  color: var(--mute);
+}
+@media (hover: none) and (pointer: coarse) {
+  .kbhint {
+    display: none;
+  }
+  .btn[data-key]::after,
+  .pcard[data-key]::after {
+    display: none;
+  }
+}
+/* 選択肢・語句カード・つぎへ・一時停止のボタンに、押すキーを小さく表示する(ボタンと同じ文字色の枠。薄くしない) */
+.btn[data-key],
+.pcard[data-key] {
+  position: relative;
+}
+.choices .btn[data-key] {
+  padding-right: 46px;
+}
+.btn[data-key]::after,
+.pcard[data-key]::after {
+  content: attr(data-key);
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 1.5em;
+  padding: 0 5px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1.5;
+  text-align: center;
+}
+.pcard[data-key] {
+  padding-right: 34px;
+}
+.keyrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.keyrow > div {
+  flex: 1 1 9em;
+}
+.kbd {
+  white-space: nowrap;
+  min-width: 4.5em;
+  padding: 4px 10px;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 800;
+  text-align: center;
+}
+.kbd.listen {
+  border-color: var(--pri);
+}
+.keymsg {
+  min-height: 1.4em;
+  margin: 8px 0 0;
+}
